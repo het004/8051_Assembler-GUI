@@ -1,4 +1,4 @@
-from components.state import FLAGS
+from state import FLAGS
 from utils.utilis import hex_to_binary
 
 def set_flags_after_add(a, b, result):
