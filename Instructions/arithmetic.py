@@ -1,8 +1,10 @@
 from state import REGISTERS, FLAGS
 from utils import add_8bit, sub_8bit
 from flags import set_flags_after_add, set_flags_after_subb
+import re
 
 def execute(opcode, operands):
+    print(f"Executing {opcode} with operands {operands}")  # Debug
     if opcode == 'ADD':
         add(operands[0], operands[1])
     elif opcode == 'SUBB':
@@ -13,10 +15,16 @@ def execute(opcode, operands):
         dec(operands[0])
 
 def add(dest, src):
+    print(f"ADD: dest={dest}, src={src}")  # Debug
     if dest == 'A' and src.startswith('#'):
         value = src[1:].upper()
-        if len(value) != 2 or not all(c in '0123456789ABCDEF' for c in value):
-            raise ValueError("Invalid immediate value")
+        if value.endswith('H'):
+            value = value[:-1]
+        elif value.startswith('0X'):
+            value = value[2:]
+        if not re.match(r'^[0-9A-F]{1,2}$', value):
+            raise ValueError(f"Invalid immediate value: '{src}'. Must be a 1-2 digit hexadecimal (e.g., #10, #1AH, #0x10).")
+        value = value.zfill(2)
         a = REGISTERS['A']
         result = add_8bit(a, value)
         REGISTERS['A'] = result
@@ -31,10 +39,16 @@ def add(dest, src):
         raise ValueError("Invalid operands for ADD")
 
 def subb(dest, src):
+    print(f"SUBB: dest={dest}, src={src}")  # Debug
     if dest == 'A' and src.startswith('#'):
         value = src[1:].upper()
-        if len(value) != 2 or not all(c in '0123456789ABCDEF' for c in value):
-            raise ValueError("Invalid immediate value")
+        if value.endswith('H'):
+            value = value[:-1]
+        elif value.startswith('0X'):
+            value = value[2:]
+        if not re.match(r'^[0-9A-F]{1,2}$', value):
+            raise ValueError(f"Invalid immediate value: '{src}'. Must be a 1-2 digit hexadecimal (e.g., #10, #1AH, #0x10).")
+        value = value.zfill(2)
         a = REGISTERS['A']
         result = sub_8bit(a, value, FLAGS['CY'])
         REGISTERS['A'] = result
