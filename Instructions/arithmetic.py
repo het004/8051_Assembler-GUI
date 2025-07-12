@@ -1,5 +1,5 @@
 from state import REGISTERS, FLAGS
-from utils.utilis import add_8bit, sub_8bit
+from utils import add_8bit, sub_8bit
 from flags import set_flags_after_add, set_flags_after_subb
 
 def execute(opcode, operands):

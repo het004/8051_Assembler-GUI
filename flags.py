@@ -1,5 +1,5 @@
 from state import FLAGS
-from utils.utilis import hex_to_binary
+from utils import hex_to_binary
 
 def set_flags_after_add(a, b, result):
     int_a = int(a, 16)
